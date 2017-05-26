@@ -3,19 +3,24 @@ package linAlg
 import (
 	"fmt"
 	"math"
+	"sort"
 )
 
 // Matrix64 - matrix with values "float64"
 type Matrix64 struct {
-	values     [][]float64 // Internal storage of values
-	sizeRow    int         // Size of rows
-	sizeColumn int         // Size of columns
+	values         [][]float64 // Internal storage of values
+	sizeRow        int         // Size of rows
+	capacityRow    int         // Capacity of rows = real size of matrix
+	sizeColumn     int         // Size of columns
+	capacityColumn int         // Capacity of columns = real size of matrix
 }
 
 // NewMatrix64bySize - constructor type of Matrix64 by sizes
 func NewMatrix64bySize(rows, columns int) (m Matrix64) {
 	m.sizeRow = rows
+	m.capacityRow = rows
 	m.sizeColumn = columns
+	m.capacityColumn = columns
 	m.values = make([][]float64, rows, rows)
 	for row := 0; row < rows; row++ {
 		m.values[row] = make([]float64, columns, columns)
@@ -32,6 +37,21 @@ func NewMatrix64byMatrix64(in Matrix64) (m Matrix64) {
 		}
 	}
 	return
+}
+
+// SetNewSize - resize a matrix with zero initialization of matrix
+func (m *Matrix64) SetNewSize(rows, columns int) {
+	if rows > m.capacityRow || columns > m.capacityColumn {
+		*m = NewMatrix64bySize(rows, columns)
+		return
+	}
+	m.sizeRow = rows
+	m.sizeColumn = columns
+	for i := 0; i < m.sizeRow; i++ {
+		for j := 0; j < m.sizeColumn; j++ {
+			m.values[i][j] = 0.0
+		}
+	}
 }
 
 // GetRowSize - return size of row
@@ -122,6 +142,75 @@ func (m Matrix64) Times(B Matrix64) (result Matrix64) {
 		}
 	}
 	return x
+}
+
+// MultiplyTtKT - multiply matrix
+// formula: T(transponse) * M * T
+func (m *Matrix64) MultiplyTtKT(t Matrix64) Matrix64 {
+	if t.GetRowSize() != m.GetRowSize() {
+		panic("Not correct algoritm")
+	}
+
+	buffer := NewMatrix64bySize(t.GetColumnSize(), m.GetColumnSize())
+
+	for i := 0; i < buffer.GetRowSize(); i++ {
+		for j := 0; j < buffer.GetColumnSize(); j++ {
+			sum := 0.0
+			for k := 0; k < t.GetRowSize(); k++ {
+				sum += t.Get(k, i) * m.Get(k, j)
+			}
+			buffer.Set(i, j, sum)
+		}
+	}
+
+	result := NewMatrix64bySize(buffer.GetRowSize(), t.GetColumnSize())
+	for i := 0; i < result.GetRowSize(); i++ {
+		for j := 0; j < result.GetColumnSize(); j++ {
+			sum := 0.0
+			for k := 0; k < buffer.GetColumnSize(); k++ {
+				sum += buffer.Get(i, k) * t.Get(k, j)
+			}
+			result.Set(i, j, sum)
+		}
+	}
+
+	return result
+}
+
+// RemoveRowAndColumn - remove rows and columns of matrix
+// without reallocation matrix
+func (m *Matrix64) RemoveRowAndColumn(indexes ...int) {
+	if len(indexes) == 0 {
+		return
+	}
+	// sorting indexes for optimization of algoritm
+	sort.Ints(indexes)
+	// global checking indexes
+	if indexes[len(indexes)-1] >= m.sizeRow || indexes[len(indexes)-1] >= m.sizeColumn {
+		panic(fmt.Errorf("indexes is outside of matrix. Indexes = %v", indexes))
+	}
+	// modify values of matrix
+	positionIndexI := 0
+	newPositionInMatrixI := 0
+	for i := 0; i < m.sizeRow; i++ {
+		if positionIndexI != len(indexes) && i == indexes[positionIndexI] {
+			positionIndexI++
+			continue
+		}
+		positionIndexJ := 0
+		newPositionInMatrixJ := 0
+		for j := 0; j < m.sizeColumn; j++ {
+			if positionIndexJ != len(indexes) && j == indexes[positionIndexJ] {
+				positionIndexJ++
+				continue
+			}
+			m.Set(newPositionInMatrixI, newPositionInMatrixJ, m.Get(i, j))
+			newPositionInMatrixJ++
+		}
+		newPositionInMatrixI++
+	}
+	m.sizeRow = m.sizeRow - len(indexes)
+	m.sizeColumn = m.sizeColumn - len(indexes)
 }
 
 func (m Matrix64) String() (s string) {

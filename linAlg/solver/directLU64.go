@@ -174,7 +174,7 @@ func (s *LU64) Det() float64 {
 // A Matrix with as many rows as A and any number of columns.
 // X so that L*U*X = B(piv,:)
 // error - Matrix row dimensions must agree. or Matrix is singular.
-func (s *LU64) Solve(A linAlg.Matrix64, b linAlg.Matrix64) (x linAlg.Matrix64) {
+func (s *LU64) Solve(b linAlg.Matrix64) (x linAlg.Matrix64) {
 
 	if b.GetRowSize() != s.lu.GetRowSize() {
 		panic(fmt.Errorf("Matrix row dimensions must agree"))
