@@ -21,7 +21,7 @@ func TestMatrix(t *testing.T) {
 func TestLUSolver(t *testing.T) {
 	A, x, b := getTest()
 	s := solver.NewLUsolver(A)
-	result := s.Solve(A, b)
+	result := s.Solve(b)
 
 	if !result.IsEqual(x) {
 		t.Errorf("Not correct LU solver")
@@ -43,10 +43,5 @@ func getTest() (A linAlg.Matrix64, x linAlg.Matrix64, b linAlg.Matrix64) {
 	}
 
 	b = A.Times(x)
-
-	//fmt.Println("A = ", A)
-	//fmt.Println("b = ", b)
-	//fmt.Println("x = ", x)
-
 	return
 }
