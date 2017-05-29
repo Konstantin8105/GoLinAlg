@@ -1306,7 +1306,6 @@ func TestA12(t *testing.T) {
 	}
 }
 
-/*
 ////
 func BenchmarkA1_10(b *testing.B) {
 	bench(b, a1, 10)
@@ -1322,9 +1321,6 @@ func BenchmarkA1_640(b *testing.B) {
 }
 func BenchmarkA1_1280(b *testing.B) {
 	bench(b, a1, 1280)
-}
-func BenchmarkA1_2560(b *testing.B) {
-	bench(b, a1, 2560)
 }
 
 ////
@@ -1343,9 +1339,6 @@ func BenchmarkA2_640(b *testing.B) {
 func BenchmarkA2_1280(b *testing.B) {
 	bench(b, a2, 1280)
 }
-func BenchmarkA2_2560(b *testing.B) {
-	bench(b, a2, 2560)
-}
 
 ////
 func BenchmarkA3_10(b *testing.B) {
@@ -1362,9 +1355,6 @@ func BenchmarkA3_640(b *testing.B) {
 }
 func BenchmarkA3_1280(b *testing.B) {
 	bench(b, a3, 1280)
-}
-func BenchmarkA3_2560(b *testing.B) {
-	bench(b, a3, 2560)
 }
 
 ////
@@ -1383,9 +1373,6 @@ func BenchmarkA4_640(b *testing.B) {
 func BenchmarkA4_1280(b *testing.B) {
 	bench(b, a4, 1280)
 }
-func BenchmarkA4_2560(b *testing.B) {
-	bench(b, a4, 2560)
-}
 
 ////
 func BenchmarkA5_10(b *testing.B) {
@@ -1402,9 +1389,6 @@ func BenchmarkA5_640(b *testing.B) {
 }
 func BenchmarkA5_1280(b *testing.B) {
 	bench(b, a5, 1280)
-}
-func BenchmarkA5_2560(b *testing.B) {
-	bench(b, a5, 2560)
 }
 
 ////
@@ -1423,10 +1407,6 @@ func BenchmarkA6_640(b *testing.B) {
 func BenchmarkA6_1280(b *testing.B) {
 	bench(b, a6, 1280)
 }
-func BenchmarkA6_2560(b *testing.B) {
-	bench(b, a6, 2560)
-}
-
 
 ////
 func BenchmarkA7_10(b *testing.B) {
@@ -1443,9 +1423,6 @@ func BenchmarkA7_640(b *testing.B) {
 }
 func BenchmarkA7_1280(b *testing.B) {
 	bench(b, a7, 1280)
-}
-func BenchmarkA7_2560(b *testing.B) {
-	bench(b, a7, 2560)
 }
 
 ////
@@ -1482,7 +1459,6 @@ func BenchmarkA9_1280(b *testing.B) {
 	bench(b, a9, 1280)
 }
 
-
 ////
 func BenchmarkA10_10(b *testing.B) {
 	bench(b, a10, 10)
@@ -1516,6 +1492,7 @@ func BenchmarkA11_640(b *testing.B) {
 func BenchmarkA11_1280(b *testing.B) {
 	bench(b, a11, 1280)
 }
+
 ////
 func BenchmarkA12_10(b *testing.B) {
 	bench(b, a12, 10)
@@ -1549,7 +1526,6 @@ func BenchmarkA13_640(b *testing.B) {
 func BenchmarkA13_1280(b *testing.B) {
 	bench(b, a13, 1280)
 }
-*/
 
 ////
 func BenchmarkA14_10(b *testing.B) {
