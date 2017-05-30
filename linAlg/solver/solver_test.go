@@ -1,6 +1,7 @@
 package solver_test
 
 import (
+	"fmt"
 	"math/rand"
 	"testing"
 
@@ -44,4 +45,19 @@ func getTest() (A linAlg.Matrix64, x linAlg.Matrix64, b linAlg.Matrix64) {
 
 	b = A.Times(x)
 	return
+}
+
+func TestEigen(t *testing.T) {
+	var A linAlg.Matrix64
+	A.Set(0, 0, -1.0)
+	A.Set(1, 0, 2.0)
+
+	A.Set(0, 1, -6.0)
+	A.Set(1, 1, 6.0)
+
+	e := solver.NewEigen(A)
+
+	fmt.Println("getV = ", e.GetV())
+	fmt.Println("eigenvalue = ", e.GetRealEigenvalues())
+	fmt.Println("eigenImag  = ", e.GetImagEigenvalues())
 }

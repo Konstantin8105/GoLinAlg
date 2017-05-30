@@ -1,6 +1,10 @@
 package solver
 
-import "math"
+import (
+	"math"
+
+	"github.com/Konstantin8105/GoLinAlg/linAlg"
+)
 
 // Eigen - Eigenvalues and eigenvectors of a real matrix.
 // If A is symmetric, then A = V*D*V' where the eigenvalue matrix D is
@@ -21,7 +25,7 @@ type Eigen struct {
 	V            [][]float64 // Array for internal storage of eigenvectors.
 	H            [][]float64 // Array for internal storage of nonsymmetric Hessenberg form.
 	ort          []float64   // Working storage for nonsymmetric algorithm.
-	cdivr, cdivi float64     //Not-serialize. Complex scalar division.
+	cdivr, cdivi float64     // Not-serialize. Complex scalar division.
 }
 
 // Symmetric Householder reduction to tridiagonal form.
@@ -792,100 +796,99 @@ func (eig *Eigen) hqr2() {
 	}
 }
 
-   // Check for symmetry, then construct the eigenvalue decomposition. Structure to access D and V.
-   func NewEigen(Arg linAlg.Matrix64){
-      double[][] A = Arg.getArray();
-      n = Arg.getColumnDimension();
-      V = new double[n][n];
-      d = new double[n];
-      e = new double[n];
+// NewEigen - Check for symmetry, then construct the eigenvalue decomposition. Structure to access D and V.
+func NewEigen(A linAlg.Matrix64) (e Eigen) {
+	e.n = A.GetColumnSize()
+	e.V = make([][]float64, e.n)
+	for i := 0; i < e.n; i++ {
+		e.V[i] = make([]float64, e.n)
+	}
+	e.d = make([]float64, e.n)
+	e.e = make([]float64, e.n)
+	// var V = new double[n][n];
+	// var d = new double[n];
+	// var e = new double[n];
 
-      issymmetric = true;
-      for (int j = 0; (j < n) & issymmetric; j++) {
-         for (int i = 0; (i < n) & issymmetric; i++) {
-            issymmetric = (A[i][j] == A[j][i]);
-         }
-      }
+	issymmetric := true
+	for j := 0; (j < e.n) && issymmetric; j++ {
+		for i := 0; (i < e.n) && issymmetric; i++ {
+			issymmetric = (A.Get(i, j) == A.Get(j, i))
+		}
+	}
 
-      if (issymmetric) {
-         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-               V[i][j] = A[i][j];
-            }
-         }
+	if issymmetric {
+		for i := 0; i < e.n; i++ {
+			for j := 0; j < e.n; j++ {
+				e.V[i][j] = A.Get(i, j)
+			}
+		}
 
-         // Tridiagonalize.
-         tred2();
+		// Tridiagonalize.
+		e.tred2()
 
-         // Diagonalize.
-         tql2();
+		// Diagonalize.
+		e.tql2()
 
-      } else {
-         H = new double[n][n];
-         ort = new double[n];
+	} else {
+		//H = new double[n][n];
+		//ort = new double[n];
+		e.H = make([][]float64, e.n)
+		for i := 0; i < e.n; i++ {
+			e.H[i] = make([]float64, e.n)
+		}
+		e.ort = make([]float64, e.n)
 
-         for (int j = 0; j < n; j++) {
-            for (int i = 0; i < n; i++) {
-               H[i][j] = A[i][j];
-            }
-         }
+		for j := 0; j < e.n; j++ {
+			for i := 0; i < e.n; i++ {
+				e.H[i][j] = A.Get(i, j)
+			}
+		}
 
-         // Reduce to Hessenberg form.
-         orthes();
+		// Reduce to Hessenberg form.
+		e.orthes()
 
-         // Reduce Hessenberg to real Schur form.
-         hqr2();
-      }
-   }
+		// Reduce Hessenberg to real Schur form.
+		e.hqr2()
+	}
+	return e
+}
 
-* ------------------------
-   Public Methods
- * ------------------------ *
+// GetV - Return the eigenvector matrix
+func (eig *Eigen) GetV() linAlg.Matrix64 {
+	m := linAlg.NewMatrix64bySize(eig.n, eig.n)
+	for i := 0; i < eig.n; i++ {
+		for j := 0; j < eig.n; j++ {
+			m.Set(i, j, eig.V[i][j])
+		}
+	}
+	return m
+}
 
-   ** Return the eigenvector matrix
-   @return     V
-   *
+// GetRealEigenvalues - Return the real parts of the eigenvalues
+func (eig *Eigen) GetRealEigenvalues() []float64 {
+	return eig.d
+}
 
-   public Matrix getV () {
-      return new Matrix(V,n,n);
-   }
+// GetImagEigenvalues - Return the imaginary parts of the eigenvalues
+func (eig *Eigen) GetImagEigenvalues() []float64 {
+	return eig.e
+}
 
-   ** Return the real parts of the eigenvalues
-   @return     real(diag(D))
-   *
-
-   public double[] getRealEigenvalues () {
-      return d;
-   }
-
-   ** Return the imaginary parts of the eigenvalues
-   @return     imag(diag(D))
-   *
-
-   public double[] getImagEigenvalues () {
-      return e;
-   }
-
-   ** Return the block diagonal eigenvalue matrix
-   @return     D
-   *
-
-   public Matrix getD () {
-      Matrix X = new Matrix(n,n);
-      double[][] D = X.getArray();
-      for (int i = 0; i < n; i++) {
-         for (int j = 0; j < n; j++) {
-            D[i][j] = 0.0;
-         }
-         D[i][i] = d[i];
-         if (e[i] > 0) {
-            D[i][i+1] = e[i];
-         } else if (e[i] < 0) {
-            D[i][i-1] = e[i];
-         }
-      }
-      return X;
-   }
+// GetD - Return the block diagonal eigenvalue matrix
+func (eig *Eigen) GetD() linAlg.Matrix64 {
+	D := linAlg.NewMatrix64bySize(eig.n, eig.n)
+	for i := 0; i < eig.n; i++ {
+		for j := 0; j < eig.n; j++ {
+			D.Set(i, j, 0.0)
+		}
+		D.Set(i, i, eig.d[i])
+		if eig.e[i] > 0 {
+			D.Set(i, i+1, eig.e[i])
+		} else if eig.e[i] < 0 {
+			D.Set(i, i-1, eig.e[i])
+		}
+	}
+	return D
 }
 
 func hypot(a, b float64) (r float64) {

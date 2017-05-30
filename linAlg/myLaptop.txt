@@ -1,0 +1,77 @@
+=== RUN   TestA12
+Start calculate a1
+Start calculate a12
+All is ok
+--- PASS: TestA12 (1.93s)
+BenchmarkA1_10-4      	  500000	      3333 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA1_40-4      	   10000	    228574 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA1_160-4     	     100	  21708776 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA1_640-4     	       1	5211578628 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA1_1280-4    	       1	47119990963 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA2_10-4      	 1000000	      2319 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA2_40-4      	   10000	    147184 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA2_160-4     	     100	  14903665 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA2_640-4     	       1	3912686535 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA2_1280-4    	       1	33580880581 ns/op	       0 B/op	       0 allocs/op
+BenchmarkA3_10-4      	 1000000	      1952 ns/op	      80 B/op	       1 allocs/op
+BenchmarkA3_40-4      	   10000	    112820 ns/op	     320 B/op	       1 allocs/op
+BenchmarkA3_160-4     	     100	  10593715 ns/op	    1280 B/op	       1 allocs/op
+BenchmarkA3_640-4     	       1	2729237106 ns/op	    5376 B/op	       1 allocs/op
+BenchmarkA3_1280-4    	       1	26026067838 ns/op	   10240 B/op	       1 allocs/op
+BenchmarkA4_10-4      	 1000000	      1513 ns/op	     160 B/op	       2 allocs/op
+BenchmarkA4_40-4      	   20000	     72048 ns/op	     640 B/op	       2 allocs/op
+BenchmarkA4_160-4     	     200	   6423541 ns/op	    2560 B/op	       2 allocs/op
+BenchmarkA4_640-4     	       1	1851446940 ns/op	   10752 B/op	       2 allocs/op
+BenchmarkA4_1280-4    	       1	16522438408 ns/op	   20480 B/op	       2 allocs/op
+BenchmarkA5_10-4      	 1000000	      2157 ns/op	     400 B/op	       5 allocs/op
+BenchmarkA5_40-4      	   20000	     80053 ns/op	    1600 B/op	       5 allocs/op
+BenchmarkA5_160-4     	     200	   6088630 ns/op	    6400 B/op	       5 allocs/op
+BenchmarkA5_640-4     	       1	1387711978 ns/op	   26880 B/op	       5 allocs/op
+BenchmarkA5_1280-4    	       1	11281253555 ns/op	   51200 B/op	       5 allocs/op
+BenchmarkA6_10-4      	 1000000	      1866 ns/op	     800 B/op	      10 allocs/op
+BenchmarkA6_40-4      	   20000	     71057 ns/op	    3200 B/op	      10 allocs/op
+BenchmarkA6_160-4     	     300	   5132674 ns/op	   12800 B/op	      10 allocs/op
+BenchmarkA6_640-4     	       1	1043606544 ns/op	   53760 B/op	      10 allocs/op
+BenchmarkA6_1280-4    	       1	8774595699 ns/op	  102400 B/op	      10 allocs/op
+BenchmarkA7_10-4      	  300000	      6231 ns/op	     816 B/op	      11 allocs/op
+BenchmarkA7_40-4      	   10000	    113798 ns/op	   12817 B/op	      41 allocs/op
+BenchmarkA7_160-4     	     200	   6397046 ns/op	  204899 B/op	     162 allocs/op
+BenchmarkA7_640-4     	       1	1691676685 ns/op	 3633840 B/op	    1068 allocs/op
+BenchmarkA7_1280-4    	       1	17197669451 ns/op	13419488 B/op	    1922 allocs/op
+BenchmarkA8_10-4      	  200000	      6145 ns/op	    3216 B/op	      41 allocs/op
+BenchmarkA8_40-4      	   20000	     63714 ns/op	   12816 B/op	      41 allocs/op
+BenchmarkA8_160-4     	     500	   3156754 ns/op	   51216 B/op	      41 allocs/op
+BenchmarkA8_640-4     	       2	 725833473 ns/op	  215056 B/op	      41 allocs/op
+BenchmarkA8_1280-4    	       1	5537967588 ns/op	  409616 B/op	      41 allocs/op
+BenchmarkA9_10-4      	  300000	      5159 ns/op	    1616 B/op	      21 allocs/op
+BenchmarkA9_40-4      	   20000	     75607 ns/op	    6416 B/op	      21 allocs/op
+BenchmarkA9_160-4     	     500	   3982757 ns/op	   25616 B/op	      21 allocs/op
+BenchmarkA9_640-4     	       2	 670866264 ns/op	  107536 B/op	      21 allocs/op
+BenchmarkA9_1280-4    	       1	6915174994 ns/op	  204816 B/op	      21 allocs/op
+BenchmarkA10_10-4     	  200000	      6553 ns/op	    3216 B/op	      41 allocs/op
+BenchmarkA10_40-4     	   20000	     83465 ns/op	   25616 B/op	      81 allocs/op
+BenchmarkA10_160-4    	     500	   3295645 ns/op	  102417 B/op	      81 allocs/op
+BenchmarkA10_640-4    	       2	 504776425 ns/op	  430096 B/op	      81 allocs/op
+BenchmarkA10_1280-4   	       1	4233507192 ns/op	  819296 B/op	      82 allocs/op
+BenchmarkA11_10-4     	  300000	      6947 ns/op	    3216 B/op	      41 allocs/op
+BenchmarkA11_40-4     	   10000	    102679 ns/op	   38416 B/op	     121 allocs/op
+BenchmarkA11_160-4    	     500	   4022030 ns/op	  153616 B/op	     121 allocs/op
+BenchmarkA11_640-4    	       3	 478411879 ns/op	  645136 B/op	     121 allocs/op
+BenchmarkA11_1280-4   	       1	3966599045 ns/op	 1228896 B/op	     122 allocs/op
+BenchmarkA12_10-4     	  300000	      6901 ns/op	    3216 B/op	      41 allocs/op
+BenchmarkA12_40-4     	   20000	     67149 ns/op	   12816 B/op	      41 allocs/op
+BenchmarkA12_160-4    	     500	   4285657 ns/op	  256017 B/op	     201 allocs/op
+BenchmarkA12_640-4    	       3	 344651060 ns/op	 1075242 B/op	     201 allocs/op
+BenchmarkA12_1280-4   	       1	3793270976 ns/op	 2048096 B/op	     202 allocs/op
+BenchmarkA13_10-4     	  300000	      6523 ns/op	    3216 B/op	      41 allocs/op
+BenchmarkA13_40-4     	   20000	     70957 ns/op	   12816 B/op	      41 allocs/op
+BenchmarkA13_160-4    	     500	   3570330 ns/op	  307220 B/op	     241 allocs/op
+BenchmarkA13_640-4    	       3	 388485162 ns/op	 1290256 B/op	     241 allocs/op
+BenchmarkA13_1280-4   	       1	3461867027 ns/op	 2457616 B/op	     241 allocs/op
+BenchmarkA14_10-4     	  500000	      3454 ns/op	     976 B/op	       2 allocs/op
+BenchmarkA14_40-4     	   10000	    195678 ns/op	    3520 B/op	       5 allocs/op
+BenchmarkA14_160-4    	     100	  13987775 ns/op	   14848 B/op	      17 allocs/op
+BenchmarkA14_640-4    	       1	3162738955 ns/op	   62464 B/op	      65 allocs/op
+BenchmarkA14_1280-4   	       1	27611294581 ns/op	  116736 B/op	     129 allocs/op
+PASS
+ok  	github.com/Konstantin8105/GoLinAlg/linAlg	332.999s
