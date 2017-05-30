@@ -701,12 +701,10 @@ func (eig *Eigen) hqr2() {
 			}
 
 			// Complex vector
-
 		} else if q < 0 {
 			l := n - 1
 
 			// Last vector component imaginary so matrix is triangular
-
 			if math.Abs(eig.H[n][n-1]) > math.Abs(eig.H[n-1][n]) {
 				eig.H[n-1][n-1] = q / eig.H[n][n-1]
 				eig.H[n-1][n] = -(eig.H[n][n] - p) / eig.H[n][n-1]
@@ -774,7 +772,6 @@ func (eig *Eigen) hqr2() {
 	}
 
 	// Vectors of isolated roots
-
 	for i := 0; i < nn; i++ {
 		if i < low || i > high {
 			for j := i; j < nn; j++ {
@@ -784,7 +781,6 @@ func (eig *Eigen) hqr2() {
 	}
 
 	// Back transformation to get eigenvectors of original matrix
-
 	for j := nn - 1; j >= low; j-- {
 		for i := low; i <= high; i++ {
 			z = 0.0
