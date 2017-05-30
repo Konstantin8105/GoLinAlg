@@ -604,7 +604,6 @@ func (eig *Eigen) hqr2() {
 					r /= p
 
 					// Row modification
-
 					for j := k; j < nn; j++ {
 						p = eig.H[k][j] + q*eig.H[k+1][j]
 						if notlast {
@@ -616,8 +615,11 @@ func (eig *Eigen) hqr2() {
 					}
 
 					// Column modification
-
-					for i := 0; i <= n || i <= k+3; i++ {
+					size := n
+					if k+3 < size {
+						size = k + 3
+					}
+					for i := 0; i <= size; i++ {
 						p = x*eig.H[i][k] + y*eig.H[i][k+1]
 						if notlast {
 							p += z * eig.H[i][k+2]
@@ -628,7 +630,6 @@ func (eig *Eigen) hqr2() {
 					}
 
 					// Accumulate transformations
-
 					for i := low; i <= high; i++ {
 						p = x*eig.V[i][k] + y*eig.V[i][k+1]
 						if notlast {
@@ -806,12 +807,15 @@ func NewEigen(A linAlg.Matrix64) (e Eigen) {
 	// var e = new double[n];
 
 	issymmetric := true
-	for j := 0; (j < e.n) && issymmetric; j++ {
-		for i := 0; (i < e.n) && issymmetric; i++ {
-			issymmetric = (A.Get(i, j) == A.Get(j, i))
+	for j := 0; j < e.n; j++ {
+		for i := 0; i < e.n; i++ {
+			if A.Get(i, j) != A.Get(j, i) {
+				issymmetric = false
+				goto BREAK
+			}
 		}
 	}
-
+BREAK:
 	if issymmetric {
 		for i := 0; i < e.n; i++ {
 			for j := 0; j < e.n; j++ {
