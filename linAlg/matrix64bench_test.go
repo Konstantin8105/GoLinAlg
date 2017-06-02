@@ -2,6 +2,7 @@ package linAlg_test
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"sync"
 	"testing"
@@ -1542,4 +1543,201 @@ func BenchmarkA14_640(b *testing.B) {
 }
 func BenchmarkA14_1280(b *testing.B) {
 	bench(b, a14, 1280)
+}
+
+func BenchmarkSingleArray(b *testing.B) {
+	b.StopTimer()
+	n := 5000
+	array := make([]float64, n*n)
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			array[i*n+j] = float64(i + j)
+		}
+	}
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		for k := 0; k < n; k++ {
+			array[2*n+k] = array[2*n+k] + math.Sin(array[2*n+k]/array[k*n+2])
+		}
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkSingleArray_2(b *testing.B) {
+	b.StopTimer()
+	n := 5000
+	array := make([]float64, n*n)
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			array[i*n+j] = float64(i + j)
+		}
+	}
+	b.StartTimer()
+	n = n / 2
+	for i := 0; i < b.N; i++ {
+		for k := 0; k < n; k++ {
+			array[2*(n*2+0)+k] = array[2*(n*2+0)+k] + math.Sin(array[2*(n*2+0)+k]/array[k*(n*2+0)+2])
+			array[2*(n*2+1)+k] = array[2*(n*2+1)+k] + math.Sin(array[2*(n*2+1)+k]/array[k*(n*2+1)+2])
+		}
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkSingleArray_5(b *testing.B) {
+	b.StopTimer()
+	n := 5000
+	array := make([]float64, n*n)
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			array[i*n+j] = float64(i + j)
+		}
+	}
+	b.StartTimer()
+	n = n / 5
+	N := n * 5
+	for i := 0; i < b.N; i++ {
+		for k := 0; k < n; k++ {
+			array[2*(N+0)+k] = array[2*(N+0)+k] + math.Sin(array[2*(N+0)+k]/array[k*(N+0)+2])
+			array[2*(N+1)+k] = array[2*(N+1)+k] + math.Sin(array[2*(N+1)+k]/array[k*(N+1)+2])
+			array[2*(N+2)+k] = array[2*(N+2)+k] + math.Sin(array[2*(N+2)+k]/array[k*(N+2)+2])
+			array[2*(N+3)+k] = array[2*(N+3)+k] + math.Sin(array[2*(N+3)+k]/array[k*(N+3)+2])
+			array[2*(N+4)+k] = array[2*(N+4)+k] + math.Sin(array[2*(N+4)+k]/array[k*(N+4)+2])
+		}
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkSingleArray_10(b *testing.B) {
+	b.StopTimer()
+	n := 5000
+	array := make([]float64, n*n)
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			array[i*n+j] = float64(i + j)
+		}
+	}
+	b.StartTimer()
+	n = n / 10
+	N := n * 10
+	for i := 0; i < b.N; i++ {
+		for k := 0; k < n; k++ {
+			array[2*(N+0)+k] = array[2*(N+0)+k] + math.Sin(array[2*(N+0)+k]/array[k*(N+0)+2])
+			array[2*(N+1)+k] = array[2*(N+1)+k] + math.Sin(array[2*(N+1)+k]/array[k*(N+1)+2])
+			array[2*(N+2)+k] = array[2*(N+2)+k] + math.Sin(array[2*(N+2)+k]/array[k*(N+2)+2])
+			array[2*(N+3)+k] = array[2*(N+3)+k] + math.Sin(array[2*(N+3)+k]/array[k*(N+3)+2])
+			array[2*(N+4)+k] = array[2*(N+4)+k] + math.Sin(array[2*(N+4)+k]/array[k*(N+4)+2])
+			array[2*(N+5)+k] = array[2*(N+5)+k] + math.Sin(array[2*(N+5)+k]/array[k*(N+5)+2])
+			array[2*(N+6)+k] = array[2*(N+6)+k] + math.Sin(array[2*(N+6)+k]/array[k*(N+6)+2])
+			array[2*(N+7)+k] = array[2*(N+7)+k] + math.Sin(array[2*(N+7)+k]/array[k*(N+7)+2])
+			array[2*(N+8)+k] = array[2*(N+8)+k] + math.Sin(array[2*(N+8)+k]/array[k*(N+8)+2])
+			array[2*(N+9)+k] = array[2*(N+9)+k] + math.Sin(array[2*(N+9)+k]/array[k*(N+9)+2])
+		}
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkDoubleArray(b *testing.B) {
+	b.StopTimer()
+	n := 5000
+	array := make([][]float64, n)
+	for i := 0; i < n; i++ {
+		array[i] = make([]float64, n)
+	}
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			array[i][j] = float64(i + j)
+		}
+	}
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		for k := 0; k < n; k++ {
+			array[2][k] = array[2][k] + math.Sin(array[2][k]/array[k][2])
+		}
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkSingleEqualArray(b *testing.B) {
+	b.StopTimer()
+	n := 500000
+	array := make([]float64, n)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		for k := 0; k < n; k++ {
+			array[k] = 1.2222
+		}
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkSingleEqualArray_2_N0(b *testing.B) {
+	b.StopTimer()
+	n := 500000
+	array := make([]float64, n)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		N := n / 2
+		for k := 0; k < N; k++ {
+			array[k*2+0] = 1.2222
+			array[k*2+1] = 1.2222
+		}
+		if n-N*2 == 1 {
+			array[n-1] = 1.2222
+		}
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkSingleEqualArray_2_N1(b *testing.B) {
+	b.StopTimer()
+	n := 500001
+	array := make([]float64, n)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		N := n / 2
+		for k := 0; k < N; k++ {
+			array[k*2+0] = 1.2222
+			array[k*2+1] = 1.2222
+		}
+		if n-N*2 == 1 {
+			array[n-1] = 1.2222
+		}
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkSingleEqualArray_2_N2(b *testing.B) {
+	b.StopTimer()
+	n := 500002
+	array := make([]float64, n)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		N := n / 2
+		for k := 0; k < N; k++ {
+			array[k*2+0] = 1.2222
+			array[k*2+1] = 1.2222
+		}
+		if n-N*2 == 1 {
+			array[n-1] = 1.2222
+		}
+	}
+	b.ReportAllocs()
+}
+
+func BenchmarkSingleEqualArray_5(b *testing.B) {
+	b.StopTimer()
+	n := 500000
+	array := make([]float64, n)
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		N := n / 5
+		for k := 0; k < N; k++ {
+			array[k*2+0] = 1.2222
+			array[k*2+1] = 1.2222
+			array[k*2+2] = 1.2222
+			array[k*2+3] = 1.2222
+			array[k*2+4] = 1.2222
+		}
+	}
+	b.ReportAllocs()
 }
