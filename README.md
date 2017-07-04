@@ -3,4 +3,5 @@ Linear algebra
 
 Todo:
 - [ ] Vector64
-- [ ] Don`t use [][] for Matrix and use [] for perforrmance
+- [ ] Don`t use [][] for Matrix and use [] for performance
+- [ ] Remove benchmark outside for research
