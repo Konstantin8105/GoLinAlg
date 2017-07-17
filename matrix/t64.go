@@ -110,7 +110,7 @@ func (m *T64) IsEqual(m2 T64) bool {
 	if m.sizeColumn != m2.sizeColumn {
 		return false
 	}
-	eps := 1e-7
+	eps := 1e-8
 	for i := 0; i < m.sizeRow; i++ {
 		for j := 0; j < m.sizeColumn; j++ {
 			e := math.Abs(m.values[i][j] - m2.values[i][j])
