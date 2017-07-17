@@ -1,4 +1,4 @@
-package linAlg
+package matrix
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 	"sort"
 )
 
-// Matrix64 - matrix with values "float64"
-type Matrix64 struct {
+// T64 - matrix with values "float64"
+type T64 struct {
 	values         [][]float64 // Internal storage of values
 	sizeRow        int         // Size of rows
 	capacityRow    int         // Capacity of rows = real size of matrix
@@ -16,7 +16,7 @@ type Matrix64 struct {
 }
 
 // NewMatrix64bySize - constructor type of Matrix64 by sizes
-func NewMatrix64bySize(rows, columns int) (m Matrix64) {
+func NewMatrix64bySize(rows, columns int) (m T64) {
 	m.sizeRow = rows
 	m.capacityRow = rows
 	m.sizeColumn = columns
@@ -28,8 +28,8 @@ func NewMatrix64bySize(rows, columns int) (m Matrix64) {
 	return
 }
 
-// NewMatrix64byMatrix64 - constructor type of Matrix64 by other Matrix64
-func NewMatrix64byMatrix64(in Matrix64) (m Matrix64) {
+// NewMatrix64byMatrix64 - constructor type of t64 by other t64
+func NewMatrix64byMatrix64(in T64) (m T64) {
 	m = NewMatrix64bySize(in.sizeRow, in.sizeColumn)
 	for row := 0; row < in.sizeRow; row++ {
 		for column := 0; column < in.sizeColumn; column++ {
@@ -40,7 +40,7 @@ func NewMatrix64byMatrix64(in Matrix64) (m Matrix64) {
 }
 
 // SetNewSize - resize a matrix with zero initialization of matrix
-func (m *Matrix64) SetNewSize(rows, columns int) {
+func (m *T64) SetNewSize(rows, columns int) {
 	if rows > m.capacityRow || columns > m.capacityColumn {
 		*m = NewMatrix64bySize(rows, columns)
 		return
@@ -55,17 +55,17 @@ func (m *Matrix64) SetNewSize(rows, columns int) {
 }
 
 // GetRowSize - return size of row
-func (m *Matrix64) GetRowSize() int {
+func (m *T64) GetRowSize() int {
 	return m.sizeRow
 }
 
 // GetColumnSize - return size of column
-func (m *Matrix64) GetColumnSize() int {
+func (m *T64) GetColumnSize() int {
 	return m.sizeColumn
 }
 
 // Get - return value of matrix
-func (m *Matrix64) Get(i, j int) float64 {
+func (m *T64) Get(i, j int) float64 {
 	if i < 0 || i >= m.sizeRow || j < 0 || j >= m.sizeColumn {
 		panic(fmt.Errorf("Not correct algoritm for [%v,%v] - out of matrix", i, j))
 	}
@@ -73,7 +73,7 @@ func (m *Matrix64) Get(i, j int) float64 {
 }
 
 // Set - insert into matrix
-func (m *Matrix64) Set(i, j int, value float64) {
+func (m *T64) Set(i, j int, value float64) {
 	if i < 0 || i >= m.sizeRow || j < 0 || j >= m.sizeColumn {
 		panic(fmt.Errorf("Not correct algoritm for [%v,%v] - out of matrix", i, j))
 	}
@@ -86,7 +86,7 @@ func (m *Matrix64) Set(i, j int, value float64) {
 // j1 - Final column index
 // return A(r(:),j0:j1)
 // or error : Submatrix indices
-func (m *Matrix64) GetSubMatrix(r []int, j0, j1 int) Matrix64 {
+func (m *T64) GetSubMatrix(r []int, j0, j1 int) T64 {
 	x := NewMatrix64bySize(len(r), j1-j0+1)
 	for i := 0; i < len(r); i++ {
 		if r[i] < 0 || r[i] >= m.sizeRow {
@@ -103,7 +103,7 @@ func (m *Matrix64) GetSubMatrix(r []int, j0, j1 int) Matrix64 {
 }
 
 // IsEqual - return true is matrix are equal
-func (m *Matrix64) IsEqual(m2 Matrix64) bool {
+func (m *T64) IsEqual(m2 T64) bool {
 	if m.sizeRow != m2.sizeRow {
 		return false
 	}
@@ -123,7 +123,7 @@ func (m *Matrix64) IsEqual(m2 Matrix64) bool {
 }
 
 // Times - Linear algebraic matrix multiplication, A * B or error
-func (m Matrix64) Times(B Matrix64) (result Matrix64) {
+func (m T64) Times(B T64) (result T64) {
 	if B.GetRowSize() != m.GetColumnSize() {
 		panic(fmt.Errorf("Matrix inner dimensions must agree"))
 	}
@@ -146,7 +146,7 @@ func (m Matrix64) Times(B Matrix64) (result Matrix64) {
 
 // MultiplyTtKT - multiply matrix
 // formula: T(transponse) * M * T
-func (m *Matrix64) MultiplyTtKT(t Matrix64) Matrix64 {
+func (m *T64) MultiplyTtKT(t T64) T64 {
 	if t.GetRowSize() != m.GetRowSize() {
 		panic("Not correct algoritm")
 	}
@@ -179,7 +179,7 @@ func (m *Matrix64) MultiplyTtKT(t Matrix64) Matrix64 {
 
 // RemoveRowAndColumn - remove rows and columns of matrix
 // without reallocation matrix
-func (m *Matrix64) RemoveRowAndColumn(indexes ...int) {
+func (m *T64) RemoveRowAndColumn(indexes ...int) {
 	if len(indexes) == 0 {
 		return
 	}
@@ -213,7 +213,7 @@ func (m *Matrix64) RemoveRowAndColumn(indexes ...int) {
 	m.sizeColumn = m.sizeColumn - len(indexes)
 }
 
-func (m Matrix64) String() (s string) {
+func (m T64) String() (s string) {
 	s += fmt.Sprintf("\n")
 	for i := 0; i < m.sizeRow; i++ {
 		s += fmt.Sprintf("[")

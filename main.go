@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/Konstantin8105/GoLinAlg/linAlg"
-	"github.com/Konstantin8105/GoLinAlg/linAlg/solver"
+	"github.com/Konstantin8105/GoLinAlg/matrix"
+	"github.com/Konstantin8105/GoLinAlg/solver"
 )
 
 func main() {
-	A := linAlg.NewMatrix64bySize(2, 2)
+	A := matrix.NewMatrix64bySize(2, 2)
 	A.Set(0, 0, -1.0)
 	A.Set(1, 0, 2.0)
 

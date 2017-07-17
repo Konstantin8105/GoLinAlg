@@ -3,7 +3,7 @@ package solver
 import (
 	"math"
 
-	"github.com/Konstantin8105/GoLinAlg/linAlg"
+	"github.com/Konstantin8105/GoLinAlg/matrix"
 )
 
 // Eigen - Eigenvalues and eigenvectors of a real matrix.
@@ -794,7 +794,7 @@ func (eig *Eigen) hqr2() {
 }
 
 // NewEigen - Check for symmetry, then construct the eigenvalue decomposition. Structure to access D and V.
-func NewEigen(A linAlg.Matrix64) (e Eigen) {
+func NewEigen(A matrix.T64) (e Eigen) {
 	e.n = A.GetColumnSize()
 	e.V = make([][]float64, e.n)
 	for i := 0; i < e.n; i++ {
@@ -854,8 +854,8 @@ BREAK:
 }
 
 // GetV - Return the eigenvector matrix
-func (eig *Eigen) GetV() linAlg.Matrix64 {
-	m := linAlg.NewMatrix64bySize(eig.n, eig.n)
+func (eig *Eigen) GetV() matrix.T64 {
+	m := matrix.NewMatrix64bySize(eig.n, eig.n)
 	for i := 0; i < eig.n; i++ {
 		for j := 0; j < eig.n; j++ {
 			m.Set(i, j, eig.V[i][j])
@@ -875,8 +875,8 @@ func (eig *Eigen) GetImagEigenvalues() []float64 {
 }
 
 // GetD - Return the block diagonal eigenvalue matrix
-func (eig *Eigen) GetD() linAlg.Matrix64 {
-	D := linAlg.NewMatrix64bySize(eig.n, eig.n)
+func (eig *Eigen) GetD() matrix.T64 {
+	D := matrix.NewMatrix64bySize(eig.n, eig.n)
 	for i := 0; i < eig.n; i++ {
 		for j := 0; j < eig.n; j++ {
 			D.Set(i, j, 0.0)

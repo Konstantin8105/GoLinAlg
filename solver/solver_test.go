@@ -5,12 +5,12 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/Konstantin8105/GoLinAlg/linAlg"
-	"github.com/Konstantin8105/GoLinAlg/linAlg/solver"
+	"github.com/Konstantin8105/GoLinAlg/matrix"
+	"github.com/Konstantin8105/GoLinAlg/solver"
 )
 
 func TestMatrix(t *testing.T) {
-	m := linAlg.NewMatrix64bySize(10, 10)
+	m := matrix.NewMatrix64bySize(10, 10)
 	if m.GetRowSize() != 10 {
 		t.Errorf("Not correct size")
 	}
@@ -30,11 +30,11 @@ func TestLUSolver(t *testing.T) {
 }
 
 // getTest - test simple test data
-func getTest() (A linAlg.Matrix64, x linAlg.Matrix64, b linAlg.Matrix64) {
+func getTest() (A matrix.T64, x matrix.T64, b matrix.T64) {
 	n := 20
-	A = linAlg.NewMatrix64bySize(n, n)
-	b = linAlg.NewMatrix64bySize(n, 1)
-	x = linAlg.NewMatrix64bySize(n, 1)
+	A = matrix.NewMatrix64bySize(n, n)
+	b = matrix.NewMatrix64bySize(n, 1)
+	x = matrix.NewMatrix64bySize(n, 1)
 
 	for i := 0; i < n; i++ {
 		for j := 0; j < n; j++ {
@@ -48,7 +48,7 @@ func getTest() (A linAlg.Matrix64, x linAlg.Matrix64, b linAlg.Matrix64) {
 }
 
 func TestEigen(t *testing.T) {
-	A := linAlg.NewMatrix64bySize(2, 2)
+	A := matrix.NewMatrix64bySize(2, 2)
 	A.Set(0, 0, -1.0)
 	A.Set(1, 0, 2.0)
 

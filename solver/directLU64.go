@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/Konstantin8105/GoLinAlg/linAlg"
+	"github.com/Konstantin8105/GoLinAlg/matrix"
 )
 
 // LU64 - LU Decomposition
@@ -17,18 +17,18 @@ import (
 // LU decomposition is in the solution of square systems of simultaneous
 // linear equations.  This will fail if isNonsingular() returns false.
 type LU64 struct {
-	lu         linAlg.Matrix64 // Array for internal storage of decomposition
-	sizeRow    int             // Size of rows
-	sizeColumn int             // Size of columns
-	pivsign    int             // Pivot sign
-	piv        []int           // Internal storage of pivot vector
+	lu         matrix.T64 // Array for internal storage of decomposition
+	sizeRow    int        // Size of rows
+	sizeColumn int        // Size of columns
+	pivsign    int        // Pivot sign
+	piv        []int      // Internal storage of pivot vector
 }
 
 // NewLUsolver - constructor
-func NewLUsolver(A linAlg.Matrix64) (s LU64) {
+func NewLUsolver(A matrix.T64) (s LU64) {
 	s.pivsign = 1
 
-	s.lu = linAlg.NewMatrix64byMatrix64(A)
+	s.lu = matrix.NewMatrix64byMatrix64(A)
 	m := s.lu.GetRowSize()
 	n := s.lu.GetColumnSize()
 	s.piv = make([]int, m, m)
@@ -103,8 +103,8 @@ func (s *LU64) isNonsingular() bool {
 }
 
 // GetL - Return matrix lower triangular factor - L
-func (s *LU64) GetL() linAlg.Matrix64 {
-	x := linAlg.NewMatrix64bySize(s.lu.GetRowSize(), s.lu.GetColumnSize())
+func (s *LU64) GetL() matrix.T64 {
+	x := matrix.NewMatrix64bySize(s.lu.GetRowSize(), s.lu.GetColumnSize())
 	m := x.GetRowSize()
 	n := x.GetColumnSize()
 	for i := 0; i < m; i++ {
@@ -122,8 +122,8 @@ func (s *LU64) GetL() linAlg.Matrix64 {
 }
 
 // GetU - Return upper triangular factor - U
-func (s *LU64) GetU() linAlg.Matrix64 {
-	x := linAlg.NewMatrix64bySize(s.lu.GetColumnSize(), s.lu.GetColumnSize())
+func (s *LU64) GetU() matrix.T64 {
+	x := matrix.NewMatrix64bySize(s.lu.GetColumnSize(), s.lu.GetColumnSize())
 	n := x.GetColumnSize()
 	for i := 0; i < n; i++ {
 		for j := 0; j < n; j++ {
@@ -174,7 +174,7 @@ func (s *LU64) Det() float64 {
 // A Matrix with as many rows as A and any number of columns.
 // X so that L*U*X = B(piv,:)
 // error - Matrix row dimensions must agree. or Matrix is singular.
-func (s *LU64) Solve(b linAlg.Matrix64) (x linAlg.Matrix64) {
+func (s *LU64) Solve(b matrix.T64) (x matrix.T64) {
 
 	if b.GetRowSize() != s.lu.GetRowSize() {
 		panic(fmt.Errorf("Matrix row dimensions must agree"))
