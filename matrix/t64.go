@@ -7,6 +7,7 @@ import (
 )
 
 // T64 - matrix with values "float64"
+// acceptable to use for vectors
 type T64 struct {
 	values         [][]float64 // Internal storage of values
 	sizeRow        int         // Size of rows
