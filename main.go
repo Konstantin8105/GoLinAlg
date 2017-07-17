@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-	//cpuProfile.GetCPUProfile()
 	A := linAlg.NewMatrix64bySize(2, 2)
 	A.Set(0, 0, -1.0)
 	A.Set(1, 0, 2.0)
