@@ -3,9 +3,7 @@ package matrix
 import (
 	"fmt"
 	"math"
-	"runtime"
 	"sort"
-	"sync"
 )
 
 // T64 - matrix with values "float64"
@@ -131,56 +129,78 @@ func (m T64) Times(B T64) (result T64) {
 		panic(fmt.Errorf("Matrix inner dimensions must agree"))
 	}
 	x := NewMatrix64bySize(m.GetRowSize(), B.GetColumnSize())
-
-	MinSizeForParallel := 100
-	if MinSizeForParallel < B.GetRowSize() {
-		// Found amount allowable parallelism
-		threads := runtime.GOMAXPROCS(0)
-		if threads > runtime.NumCPU() {
-			threads = runtime.NumCPU()
-		}
-		// Create workgroup
-		var wg sync.WaitGroup
-		// Run calculation in goroutines
-		for t := 0; t < threads; t++ {
-			// Add one goroutine in workgroup
-			wg.Add(1)
-			// The value "init" is a number of thread
-			// that created for offset of loop
-			go func(init int) {
-				// Change waitgroup after work done
-				defer wg.Done()
-				Bcolj := make([]float64, m.GetColumnSize(), m.GetColumnSize())
-				for j := init; j < B.GetColumnSize(); j += threads {
-					for k := 0; k < m.GetColumnSize(); k++ {
-						Bcolj[k] = B.Get(k, j)
-					}
-					for i := 0; i < m.GetRowSize(); i++ {
-						sum := 0.0
-						for k := 0; k < m.GetColumnSize(); k++ {
-							sum += m.values[i][k] * Bcolj[k]
-						}
-						x.Set(i, j, sum)
-					}
-				}
-			}(t)
-		}
-		wg.Wait()
-		return x
-	}
-	Bcolj := make([]float64, m.GetColumnSize(), m.GetColumnSize())
-	for j := 0; j < B.GetColumnSize(); j++ {
-		for k := 0; k < m.GetColumnSize(); k++ {
-			Bcolj[k] = B.Get(k, j)
-		}
-		for i := 0; i < m.GetRowSize(); i++ {
-			sum := 0.0
-			for k := 0; k < m.GetColumnSize(); k++ {
-				sum += m.values[i][k] * Bcolj[k]
+	/*
+		MinSizeForParallel := 100
+		if MinSizeForParallel < B.GetRowSize() {
+			// Found amount allowable parallelism
+			threads := runtime.GOMAXPROCS(0)
+			if threads > runtime.NumCPU() {
+				threads = runtime.NumCPU()
 			}
-			x.Set(i, j, sum)
+			// Create workgroup
+			var wg sync.WaitGroup
+			// Run calculation in goroutines
+			for t := 0; t < threads; t++ {
+				// Add one goroutine in workgroup
+				wg.Add(1)
+				// The value "init" is a number of thread
+				// that created for offset of loop
+				go func(init int) {
+					// Change waitgroup after work done
+					defer wg.Done()
+					Bcolj := make([]float64, m.GetColumnSize(), m.GetColumnSize())
+					for j := init; j < B.GetColumnSize(); j += threads {
+						for k := 0; k < m.GetColumnSize(); k++ {
+							Bcolj[k] = B.Get(k, j)
+						}
+						for i := 0; i < m.GetRowSize(); i++ {
+							sum := 0.0
+							for k := 0; k < m.GetColumnSize(); k++ {
+								sum += m.values[i][k] * Bcolj[k]
+							}
+							x.Set(i, j, sum)
+						}
+					}
+				}(t)
+			}
+			wg.Wait()
+			return x
+		}
+	*/
+	/*
+		Bcolj := make([]float64, m.GetColumnSize(), m.GetColumnSize())
+		for j := 0; j < B.GetColumnSize(); j++ {
+			for k := 0; k < m.GetColumnSize(); k++ {
+				Bcolj[k] = B.Get(k, j)
+			}
+			for i := 0; i < m.GetRowSize(); i++ {
+				sum := 0.0
+				for k := 0; k < m.GetColumnSize(); k++ {
+					sum += m.values[i][k] * Bcolj[k]
+				}
+				x.Set(i, j, sum)
+			}
+		}
+	*/
+	/*
+		for j := 0; j < B.GetColumnSize(); j++ {
+			for i := 0; i < m.GetRowSize(); i++ {
+				sum := 0.0
+				for k := 0; k < m.GetColumnSize(); k++ {
+					sum += m.values[i][k] * B.Get(k, j)
+				}
+				x.Set(i, j, sum)
+			}
+		}
+	*/
+	for j := 0; j < B.GetColumnSize(); j++ {
+		for i := 0; i < m.GetRowSize(); i++ {
+			for k := 0; k < m.GetColumnSize(); k++ {
+				x.Set(i, j, x.Get(i, j)+m.values[i][k]*B.Get(k, j))
+			}
 		}
 	}
+
 	return x
 
 }
