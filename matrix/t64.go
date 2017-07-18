@@ -3,7 +3,9 @@ package matrix
 import (
 	"fmt"
 	"math"
+	"runtime"
 	"sort"
+	"sync"
 )
 
 // T64 - matrix with values "float64"
@@ -129,7 +131,9 @@ func (m T64) Times(B T64) (result T64) {
 		panic(fmt.Errorf("Matrix inner dimensions must agree"))
 	}
 	x := NewMatrix64bySize(m.GetRowSize(), B.GetColumnSize())
-	/*
+
+	MinSizeForParallel := 100
+	if MinSizeForParallel < B.GetRowSize() {
 		// Found amount allowable parallelism
 		threads := runtime.GOMAXPROCS(0)
 		if threads > runtime.NumCPU() {
@@ -163,7 +167,7 @@ func (m T64) Times(B T64) (result T64) {
 		}
 		wg.Wait()
 		return x
-	*/
+	}
 	Bcolj := make([]float64, m.GetColumnSize(), m.GetColumnSize())
 	for j := 0; j < B.GetColumnSize(); j++ {
 		for k := 0; k < m.GetColumnSize(); k++ {
