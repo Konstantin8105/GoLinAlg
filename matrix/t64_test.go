@@ -264,7 +264,7 @@ func BenchmarkTimesForMatrixMatrix(b *testing.B) {
 			}
 			b.StartTimer()
 			for i := 0; i < b.N; i++ {
-				_ = A.Times(B)
+				_ = A.Times(&B)
 			}
 		})
 	}
@@ -295,7 +295,7 @@ func BenchmarkTimesForMatrixVector(b *testing.B) {
 			}
 			b.StartTimer()
 			for i := 0; i < b.N; i++ {
-				_ = A.Times(B)
+				_ = A.Times(&B)
 			}
 		})
 	}
@@ -326,7 +326,7 @@ func BenchmarkTimesForVectorMatrix(b *testing.B) {
 			}
 			b.StartTimer()
 			for i := 0; i < b.N; i++ {
-				_ = A.Times(B)
+				_ = A.Times(&B)
 			}
 		})
 	}
@@ -355,7 +355,7 @@ func BenchmarkTimesForVectorVector(b *testing.B) {
 			}
 			b.StartTimer()
 			for i := 0; i < b.N; i++ {
-				_ = A.Times(B)
+				_ = A.Times(&B)
 			}
 		})
 	}
@@ -384,7 +384,7 @@ func BenchmarkTimesForVectorVecto2(b *testing.B) {
 			}
 			b.StartTimer()
 			for i := 0; i < b.N; i++ {
-				_ = A.Times(B)
+				_ = A.Times(&B)
 			}
 		})
 	}

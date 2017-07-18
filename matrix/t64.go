@@ -124,83 +124,12 @@ func (m *T64) IsEqual(m2 T64) bool {
 }
 
 // Times - Linear algebraic matrix multiplication, A * B or error
-func (m T64) Times(B T64) (result T64) {
+func (m *T64) Times(B *T64) (result T64) {
 	if B.GetRowSize() != m.GetColumnSize() {
 		panic(fmt.Errorf("Matrix inner dimensions must agree"))
 	}
 	x := NewMatrix64bySize(m.GetRowSize(), B.GetColumnSize())
-	/*
-		MinSizeForParallel := 100
-		if MinSizeForParallel < B.GetRowSize() {
-			// Found amount allowable parallelism
-			threads := runtime.GOMAXPROCS(0)
-			if threads > runtime.NumCPU() {
-				threads = runtime.NumCPU()
-			}
-			// Create workgroup
-			var wg sync.WaitGroup
-			// Run calculation in goroutines
-			for t := 0; t < threads; t++ {
-				// Add one goroutine in workgroup
-				wg.Add(1)
-				// The value "init" is a number of thread
-				// that created for offset of loop
-				go func(init int) {
-					// Change waitgroup after work done
-					defer wg.Done()
-					Bcolj := make([]float64, m.GetColumnSize(), m.GetColumnSize())
-					for j := init; j < B.GetColumnSize(); j += threads {
-						for k := 0; k < m.GetColumnSize(); k++ {
-							Bcolj[k] = B.Get(k, j)
-						}
-						for i := 0; i < m.GetRowSize(); i++ {
-							sum := 0.0
-							for k := 0; k < m.GetColumnSize(); k++ {
-								sum += m.values[i][k] * Bcolj[k]
-							}
-							x.Set(i, j, sum)
-						}
-					}
-				}(t)
-			}
-			wg.Wait()
-			return x
-		}
-	*/
-	/*
-		Bcolj := make([]float64, m.GetColumnSize(), m.GetColumnSize())
-		for j := 0; j < B.GetColumnSize(); j++ {
-			for k := 0; k < m.GetColumnSize(); k++ {
-				Bcolj[k] = B.Get(k, j)
-			}
-			for i := 0; i < m.GetRowSize(); i++ {
-				sum := 0.0
-				for k := 0; k < m.GetColumnSize(); k++ {
-					sum += m.values[i][k] * Bcolj[k]
-				}
-				x.Set(i, j, sum)
-			}
-		}
-	*/
-	/*
-		for j := 0; j < B.GetColumnSize(); j++ {
-			for i := 0; i < m.GetRowSize(); i++ {
-				sum := 0.0
-				for k := 0; k < m.GetColumnSize(); k++ {
-					sum += m.values[i][k] * B.Get(k, j)
-				}
-				x.Set(i, j, sum)
-			}
-		}
-	*/
-	for j := 0; j < B.GetColumnSize(); j++ {
-		for i := 0; i < m.GetRowSize(); i++ {
-			for k := 0; k < m.GetColumnSize(); k++ {
-				x.Set(i, j, x.Get(i, j)+m.values[i][k]*B.Get(k, j))
-			}
-		}
-	}
-
+	timesAlgorithm(&m.values, &B.values, &x.values, m.GetRowSize(), m.GetColumnSize(), B.GetColumnSize())
 	return x
 
 }
