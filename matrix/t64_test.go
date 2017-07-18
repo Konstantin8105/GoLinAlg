@@ -1,6 +1,7 @@
 package matrix_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Konstantin8105/GoLinAlg/matrix"
@@ -191,5 +192,74 @@ func TestCopyByMatrix(t *testing.T) {
 	m2 := matrix.NewMatrix64byMatrix64(m1)
 	if m1.GetRowSize() != m2.GetRowSize() || m1.GetColumnSize() != m2.GetColumnSize() {
 		t.Errorf("Cannot create matrix with same size")
+	}
+}
+
+func TestSet1(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	m.Set(-1, 0, 42.)
+}
+
+func TestSet2(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	m.Set(0, -1, 42.)
+}
+
+func TestSet3(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	m.Set(1, 0, 42.)
+}
+
+func TestSet4(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	m.Set(0, 1, 42.)
+}
+
+func BenchmarkTimes(b *testing.B) {
+	benchmarks := []struct {
+		size int
+	}{
+		{5},
+		{10},
+		{50},
+		{100},
+		{500},
+		{1000},
+		{5000},
+	}
+	for _, bm := range benchmarks {
+		b.Run(fmt.Sprintf("%6v", bm.size), func(b *testing.B) {
+			b.StopTimer()
+			A := matrix.NewMatrix64bySize(bm.size, bm.size)
+			B := matrix.NewMatrix64bySize(bm.size, bm.size)
+			b.StartTimer()
+			for i := 0; i < b.N; i++ {
+				_ = A.Times(B)
+			}
+		})
 	}
 }
