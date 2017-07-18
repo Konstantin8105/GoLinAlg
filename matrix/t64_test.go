@@ -79,6 +79,17 @@ func TestRemoveRowAndColumn3(t *testing.T) {
 	m.RemoveRowAndColumn(0, 1)
 }
 
+func TestRemoveRowAndColumn4(t *testing.T) {
+	m := matrix.NewMatrix64bySize(5, 3)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	m.RemoveRowAndColumn(4)
+}
+
 func TestEqual1(t *testing.T) {
 	m1 := matrix.NewMatrix64bySize(1, 1)
 	m1.Set(0, 0, 42.)
@@ -161,4 +172,24 @@ func TestGet4(t *testing.T) {
 	}()
 	// Testing
 	_ = m.Get(0, 1)
+}
+
+func TestGet5(t *testing.T) {
+	m := *new(matrix.T64)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	_ = m.Get(0, 1)
+}
+
+func TestCopyByMatrix(t *testing.T) {
+	m1 := matrix.NewMatrix64bySize(2, 1)
+	m1.Set(1, 0, 42.)
+	m2 := matrix.NewMatrix64byMatrix64(m1)
+	if m1.GetRowSize() != m2.GetRowSize() || m1.GetColumnSize() != m2.GetColumnSize() {
+		t.Errorf("Cannot create matrix with same size")
+	}
 }
