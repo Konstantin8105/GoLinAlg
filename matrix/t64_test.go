@@ -239,7 +239,38 @@ func TestSet4(t *testing.T) {
 	m.Set(0, 1, 42.)
 }
 
-func BenchmarkTimes(b *testing.B) {
+func BenchmarkTimesForSquareMatrix(b *testing.B) {
+	benchmarks := []struct {
+		size int
+	}{
+		{5},
+		{10},
+		{50},
+		{100},
+		{500},
+		{1000},
+		//	{5000},
+	}
+	for _, bm := range benchmarks {
+		b.Run(fmt.Sprintf("%6v", bm.size), func(b *testing.B) {
+			b.StopTimer()
+			A := matrix.NewMatrix64bySize(bm.size, bm.size)
+			B := matrix.NewMatrix64bySize(bm.size, bm.size)
+			for i := 0; i < bm.size; i++ {
+				for j := 0; j < bm.size; j++ {
+					A.Set(i, j, 42.)
+					B.Set(i, j, 42.)
+				}
+			}
+			b.StartTimer()
+			for i := 0; i < b.N; i++ {
+				_ = A.Times(B)
+			}
+		})
+	}
+}
+
+func BenchmarkTimesForMatrixVector(b *testing.B) {
 	benchmarks := []struct {
 		size int
 	}{
@@ -255,7 +286,44 @@ func BenchmarkTimes(b *testing.B) {
 		b.Run(fmt.Sprintf("%6v", bm.size), func(b *testing.B) {
 			b.StopTimer()
 			A := matrix.NewMatrix64bySize(bm.size, bm.size)
+			B := matrix.NewMatrix64bySize(bm.size, 1)
+			for i := 0; i < bm.size; i++ {
+				B.Set(i, 0, 42.)
+				for j := 0; j < bm.size; j++ {
+					A.Set(i, j, 42.)
+				}
+			}
+			b.StartTimer()
+			for i := 0; i < b.N; i++ {
+				_ = A.Times(B)
+			}
+		})
+	}
+}
+
+func BenchmarkTimesForVectorMatrix(b *testing.B) {
+	benchmarks := []struct {
+		size int
+	}{
+		{5},
+		{10},
+		{50},
+		{100},
+		{500},
+		{1000},
+		{5000},
+	}
+	for _, bm := range benchmarks {
+		b.Run(fmt.Sprintf("%6v", bm.size), func(b *testing.B) {
+			b.StopTimer()
+			A := matrix.NewMatrix64bySize(1, bm.size)
 			B := matrix.NewMatrix64bySize(bm.size, bm.size)
+			for i := 0; i < bm.size; i++ {
+				A.Set(0, i, 42.)
+				for j := 0; j < bm.size; j++ {
+					B.Set(i, j, 42.)
+				}
+			}
 			b.StartTimer()
 			for i := 0; i < b.N; i++ {
 				_ = A.Times(B)
