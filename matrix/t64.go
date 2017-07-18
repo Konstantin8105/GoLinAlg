@@ -187,6 +187,9 @@ func (m *T64) RemoveRowAndColumn(indexes ...int) {
 	// sorting indexes for optimization of algoritm
 	sort.Ints(indexes)
 	// global checking indexes
+	if indexes[0] < 0 {
+		panic(fmt.Errorf("Index is outside of matrix indexes = %v", indexes))
+	}
 	if indexes[len(indexes)-1] >= m.sizeRow || indexes[len(indexes)-1] >= m.sizeColumn {
 		panic(fmt.Errorf("indexes is outside of matrix. Indexes = %v", indexes))
 	}

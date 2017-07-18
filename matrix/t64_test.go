@@ -20,7 +20,7 @@ func TestString2(t *testing.T) {
 	}
 }
 
-func TestRemoveRowAndColumn(t *testing.T) {
+func TestRemoveRowAndColumn1(t *testing.T) {
 	size := 2
 	m := matrix.NewMatrix64bySize(size, size)
 	if m.GetRowSize() != size {
@@ -55,4 +55,110 @@ func TestRemoveRowAndColumn(t *testing.T) {
 	if m.Get(0, 0) != 220. {
 		t.Errorf("Not correct removing row and column function")
 	}
+}
+
+func TestRemoveRowAndColumn2(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	m.RemoveRowAndColumn(0, -1)
+}
+
+func TestRemoveRowAndColumn3(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	m.RemoveRowAndColumn(0, 1)
+}
+
+func TestEqual1(t *testing.T) {
+	m1 := matrix.NewMatrix64bySize(1, 1)
+	m1.Set(0, 0, 42.)
+	m2 := matrix.NewMatrix64bySize(1, 1)
+	m2.Set(0, 0, 42.)
+	if !m1.IsEqual(m2) {
+		t.Errorf("Matrixes is not equal")
+	}
+}
+
+func TestEqual2(t *testing.T) {
+	m1 := matrix.NewMatrix64bySize(1, 1)
+	m1.Set(0, 0, 42.)
+	m2 := matrix.NewMatrix64bySize(2, 1)
+	m2.Set(0, 0, 42.)
+	if m1.IsEqual(m2) {
+		t.Errorf("Matrixes is equal")
+	}
+}
+
+func TestEqual3(t *testing.T) {
+	m1 := matrix.NewMatrix64bySize(1, 1)
+	m1.Set(0, 0, 42.)
+	m2 := matrix.NewMatrix64bySize(1, 2)
+	m2.Set(0, 0, 42.)
+	if m1.IsEqual(m2) {
+		t.Errorf("Matrixes is equal")
+	}
+}
+
+func TestEqual4(t *testing.T) {
+	m1 := matrix.NewMatrix64bySize(1, 1)
+	m1.Set(0, 0, 42.)
+	m2 := matrix.NewMatrix64bySize(1, 1)
+	m2.Set(0, 0, -42.)
+	if m1.IsEqual(m2) {
+		t.Errorf("Matrixes is equal")
+	}
+}
+
+func TestGet1(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	_ = m.Get(-1, 0)
+}
+
+func TestGet2(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	_ = m.Get(0, -1)
+}
+
+func TestGet3(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	_ = m.Get(1, 0)
+}
+
+func TestGet4(t *testing.T) {
+	m := matrix.NewMatrix64bySize(1, 1)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	_ = m.Get(0, 1)
 }
