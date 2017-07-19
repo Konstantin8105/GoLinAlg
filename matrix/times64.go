@@ -1,9 +1,48 @@
 package matrix
 
+import (
+	"runtime"
+	"sync"
+)
+
+const (
+	sizeof  = 8.
+	memory  = 3000000.
+	floatL3 = int(memory / sizeof)
+	floatL2 = floatL3 / 10
+	floatL1 = floatL2 / 20
+)
+
 // matrix a with size [m,n]
 // matrix b with size [n,h]
 // matrix c with size [m,h]
 func timesAlgorithm(a, b, c *[][]float64, m, n, h int) {
+	sizeSummaryFloats := m*n + n*h + m*h
+	if sizeSummaryFloats < floatL1 {
+		timesAlgorithmSimple(a, b, c, m, n, h)
+		return
+	}
+	// Found amount allowable parallelism
+	threads := runtime.GOMAXPROCS(0)
+	if threads > runtime.NumCPU() {
+		threads = runtime.NumCPU()
+	}
+	if sizeSummaryFloats < floatL2 {
+		timesAlgorithmParallelBuf1(a, b, c, m, n, h)
+		return
+	}
+	// parallel algo
+	//if sizeSummaryFloats < floatL3 {
+	//}
+	//alpha := (memory - float64(n)) / (float64(n) + 1.)
+	//if alpha > float64(m) {
+	//	alpha = float64(m)
+	//}
+	//betta := (memory - 2.*alpha) / (float64(n) + 2.*alpha)
+	// amount rows of [A]
+	//iAlpha := int(alpha)
+	// amount columns of [B]
+	//iBetta := int(betta)
 	for i := 0; i < m; i++ {
 		for j := 0; j < h; j++ {
 			for k := 0; k < n; k++ {
@@ -13,76 +52,52 @@ func timesAlgorithm(a, b, c *[][]float64, m, n, h int) {
 	}
 }
 
-/*
-	MinSizeForParallel := 100
-	if MinSizeForParallel < B.GetRowSize() {
-		// Found amount allowable parallelism
-		threads := runtime.GOMAXPROCS(0)
-		if threads > runtime.NumCPU() {
-			threads = runtime.NumCPU()
+func timesAlgorithmSimple(a, b, c *[][]float64, m, n, h int) {
+	var sum float64
+	for j := 0; j < h; j++ {
+		for i := 0; i < m; i++ {
+			sum = 0
+			for k := 0; k < n; k++ {
+				sum += (*a)[i][k] * (*b)[k][j]
+			}
+			(*c)[i][j] = sum
 		}
-		// Create workgroup
-		var wg sync.WaitGroup
-		// Run calculation in goroutines
-		for t := 0; t < threads; t++ {
-			// Add one goroutine in workgroup
-			wg.Add(1)
-			// The value "init" is a number of thread
-			// that created for offset of loop
-			go func(init int) {
-				// Change waitgroup after work done
-				defer wg.Done()
-				Bcolj := make([]float64, m.GetColumnSize(), m.GetColumnSize())
-				for j := init; j < B.GetColumnSize(); j += threads {
-					for k := 0; k < m.GetColumnSize(); k++ {
-						Bcolj[k] = B.Get(k, j)
-					}
-					for i := 0; i < m.GetRowSize(); i++ {
-						sum := 0.0
-						for k := 0; k < m.GetColumnSize(); k++ {
-							sum += m.values[i][k] * Bcolj[k]
-						}
-						x.Set(i, j, sum)
-					}
+	}
+}
+
+func timesAlgorithmParallelBuf1(a, b, c *[][]float64, m, n, h int) {
+	// Create workgroup
+	var wg sync.WaitGroup
+	// Run calculation in goroutines
+	step := int(float64(h) / float64(threads))
+	from := 0
+	var to int
+	for t := 0; t < threads; t++ {
+		to = from + step
+		if to > h {
+			to = h
+		}
+		// Add one goroutine in workgroup
+		wg.Add(1)
+		go func(from, to int) {
+			// Change waitgroup after work done
+			defer wg.Done()
+			var sum float64
+			buf := make([]float64, n, n)
+			for j := from; j < to; j++ {
+				for k := 0; k < n; k++ {
+					buf[k] = (*b)[k][j]
 				}
-			}(t)
-		}
-		wg.Wait()
-		return x
-	}
-*/
-/*
-	Bcolj := make([]float64, m.GetColumnSize(), m.GetColumnSize())
-	for j := 0; j < B.GetColumnSize(); j++ {
-		for k := 0; k < m.GetColumnSize(); k++ {
-			Bcolj[k] = B.Get(k, j)
-		}
-		for i := 0; i < m.GetRowSize(); i++ {
-			sum := 0.0
-			for k := 0; k < m.GetColumnSize(); k++ {
-				sum += m.values[i][k] * Bcolj[k]
+				for i := 0; i < m; i++ {
+					sum = 0
+					for k := 0; k < n; k++ {
+						sum += (*a)[i][k] * buf[k]
+					}
+					(*c)[i][j] = sum
+				}
 			}
-			x.Set(i, j, sum)
-		}
+		}(from, to)
+		from = to
 	}
-*/
-/*
-	for j := 0; j < B.GetColumnSize(); j++ {
-		for i := 0; i < m.GetRowSize(); i++ {
-			sum := 0.0
-			for k := 0; k < m.GetColumnSize(); k++ {
-				sum += m.values[i][k] * B.Get(k, j)
-			}
-			x.Set(i, j, sum)
-		}
-	}
-*/
-/*
-	for j := 0; j < B.GetColumnSize(); j++ {
-		for i := 0; i < m.GetRowSize(); i++ {
-			for k := 0; k < m.GetColumnSize(); k++ {
-				x.Set(i, j, x.Get(i, j)+m.values[i][k]*B.Get(k, j))
-			}
-		}
-	}
-*/
+	wg.Wait()
+}
