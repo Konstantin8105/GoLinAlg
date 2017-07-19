@@ -103,6 +103,7 @@ func timesAlgorithm(a, b, c *[][]float64, m, n, h int) {
 	return
 	//	}
 	/*
+
 		// add strategy for many buffers
 		var wg sync.WaitGroup
 		// Run calculation in goroutines
