@@ -1,7 +1,6 @@
 package matrix_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/Konstantin8105/GoLinAlg/matrix"
@@ -239,153 +238,35 @@ func TestSet4(t *testing.T) {
 	m.Set(0, 1, 42.)
 }
 
-func BenchmarkTimesForMatrixMatrix(b *testing.B) {
-	benchmarks := []struct {
-		size int
-	}{
-		{5},
-		{10},
-		{50},
-		{100},
-		{500},
-		{1000},
-		//{5000},
-	}
-	for _, bm := range benchmarks {
-		b.Run(fmt.Sprintf("%6v", bm.size), func(b *testing.B) {
-			b.StopTimer()
-			A := matrix.NewMatrix64bySize(bm.size, bm.size)
-			B := matrix.NewMatrix64bySize(bm.size, bm.size)
-			for i := 0; i < bm.size; i++ {
-				for j := 0; j < bm.size; j++ {
-					A.Set(i, j, 42.)
-					B.Set(i, j, 42.)
-				}
-			}
-			b.StartTimer()
-			for i := 0; i < b.N; i++ {
-				_ = A.Times(&B)
-			}
-		})
+func TestTimes(t *testing.T) {
+	A := matrix.NewMatrix64bySize(2, 4)
+	A.Set(0, 0, 2.)
+	A.Set(0, 2, 4.)
+	A.Set(0, 3, -1.)
+	A.Set(1, 0, 1.)
+	A.Set(1, 1, -1.)
+	A.Set(1, 2, 1.)
+
+	B := matrix.NewMatrix64bySize(4, 1)
+	B.Set(0, 0, 2.)
+	B.Set(1, 0, 1.)
+	B.Set(3, 0, -2.)
+
+	C := A.Times(&B)
+	if C.Get(0, 0) != 6. || C.Get(1, 0) != 1. {
+		t.Errorf("multiplication is wrong. C = %v", C)
 	}
 }
 
-func BenchmarkTimesForMatrixVector(b *testing.B) {
-	benchmarks := []struct {
-		size int
-	}{
-		{5},
-		{10},
-		{50},
-		{100},
-		{500},
-		{1000},
-		{5000},
-	}
-	for _, bm := range benchmarks {
-		b.Run(fmt.Sprintf("%6v", bm.size), func(b *testing.B) {
-			b.StopTimer()
-			A := matrix.NewMatrix64bySize(bm.size, bm.size)
-			B := matrix.NewMatrix64bySize(bm.size, 1)
-			for i := 0; i < bm.size; i++ {
-				B.Set(i, 0, 42.)
-				for j := 0; j < bm.size; j++ {
-					A.Set(i, j, 42.)
-				}
-			}
-			b.StartTimer()
-			for i := 0; i < b.N; i++ {
-				_ = A.Times(&B)
-			}
-		})
-	}
-}
+func TestTimesPanic(t *testing.T) {
+	m1 := matrix.NewMatrix64bySize(1, 1)
+	m2 := matrix.NewMatrix64bySize(2, 2)
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("The code did not panic")
+		}
+	}()
+	// Testing
+	_ = m1.Times(&m2)
 
-func BenchmarkTimesForVectorMatrix(b *testing.B) {
-	benchmarks := []struct {
-		size int
-	}{
-		{5},
-		{10},
-		{50},
-		{100},
-		{500},
-		{1000},
-		{5000},
-	}
-	for _, bm := range benchmarks {
-		b.Run(fmt.Sprintf("%6v", bm.size), func(b *testing.B) {
-			b.StopTimer()
-			A := matrix.NewMatrix64bySize(1, bm.size)
-			B := matrix.NewMatrix64bySize(bm.size, bm.size)
-			for i := 0; i < bm.size; i++ {
-				A.Set(0, i, 42.)
-				for j := 0; j < bm.size; j++ {
-					B.Set(i, j, 42.)
-				}
-			}
-			b.StartTimer()
-			for i := 0; i < b.N; i++ {
-				_ = A.Times(&B)
-			}
-		})
-	}
-}
-
-func BenchmarkTimesForVectorVector(b *testing.B) {
-	benchmarks := []struct {
-		size int
-	}{
-		{5},
-		{10},
-		{50},
-		{100},
-		{500},
-		{1000},
-		{5000},
-	}
-	for _, bm := range benchmarks {
-		b.Run(fmt.Sprintf("%6v", bm.size), func(b *testing.B) {
-			b.StopTimer()
-			A := matrix.NewMatrix64bySize(1, bm.size)
-			B := matrix.NewMatrix64bySize(bm.size, 1)
-			for i := 0; i < bm.size; i++ {
-				A.Set(0, i, 42.)
-				B.Set(i, 0, 42.)
-			}
-			b.StartTimer()
-			for i := 0; i < b.N; i++ {
-				_ = A.Times(&B)
-			}
-		})
-	}
-}
-
-func BenchmarkTimesForVectorVecto2(b *testing.B) {
-	benchmarks := []struct {
-		size int
-	}{
-		{5},
-		{10},
-		{50},
-		{100},
-		{500},
-		{1000},
-		{5000},
-	}
-	for _, bm := range benchmarks {
-		b.Run(fmt.Sprintf("%6v", bm.size), func(b *testing.B) {
-			b.StopTimer()
-			A := matrix.NewMatrix64bySize(bm.size, 1)
-			B := matrix.NewMatrix64bySize(1, bm.size)
-			for i := 0; i < bm.size; i++ {
-				A.Set(i, 0, 42.)
-				B.Set(0, i, 42.)
-			}
-			b.StartTimer()
-			for i := 0; i < b.N; i++ {
-				_ = A.Times(&B)
-			}
-		})
-	}
 }

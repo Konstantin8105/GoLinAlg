@@ -128,9 +128,30 @@ func (m *T64) Times(B *T64) (result T64) {
 	if B.GetRowSize() != m.GetColumnSize() {
 		panic(fmt.Errorf("Matrix inner dimensions must agree"))
 	}
-	x := NewMatrix64bySize(m.GetRowSize(), B.GetColumnSize())
-	timesAlgorithm(&m.values, &B.values, &x.values, m.GetRowSize(), m.GetColumnSize(), B.GetColumnSize())
-	return x
+	X := NewMatrix64bySize(m.GetRowSize(), B.GetColumnSize())
+	//timesAlgorithm(&m.values, &B.values, &x.values, m.GetRowSize(), m.GetColumnSize(), B.GetColumnSize())
+	// matrix a with size [m,n]
+	// matrix b with size [n,h]
+	// matrix c with size [m,h]
+	a := &m.values
+	b := &B.values
+	c := &X.values
+	t := m.GetRowSize()
+	n := m.GetColumnSize()
+	h := B.GetColumnSize()
+	//func timesAlgorithm(a, b, c *[][]float64, t, n, h int) {
+	var sum float64
+	for j := 0; j < h; j++ {
+		for i := 0; i < t; i++ {
+			sum = 0
+			for k := 0; k < n; k++ {
+				sum += (*a)[i][k] * (*b)[k][j]
+			}
+			(*c)[i][j] = sum
+		}
+	}
+	//}
+	return X
 
 }
 
