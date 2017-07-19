@@ -1,7 +1,6 @@
 package matrix
 
 import (
-	"fmt"
 	"runtime"
 	"sync"
 )
@@ -35,12 +34,7 @@ func timesAlgorithm(a, b, c *[][]float64, m, n, h int) {
 	if threads > runtime.NumCPU() {
 		threads = runtime.NumCPU()
 	}
-
-	fmt.Println("threads = ", threads)
-
 	memPerTh := memory / float64(threads)
-
-	fmt.Printf("memory = %8v\n", memPerTh)
 
 	// parallel algo
 	alpha := (memPerTh - float64(n)) / (float64(n) + 1.)
@@ -52,16 +46,12 @@ func timesAlgorithm(a, b, c *[][]float64, m, n, h int) {
 		betta = float64(h)
 	}
 	// amount rows of [A]
-	iAlpha := int(alpha)
+	//iAlpha := int(alpha)
 	// amount columns of [B]
-	iBetta := int(betta)
-
-	fmt.Println("<", iAlpha, ",", iBetta, ">")
+	//iBetta := int(betta)
 
 	// Create workgroup
 	if alpha > betta {
-
-		fmt.Println("parallel strategy")
 
 		var wg sync.WaitGroup
 		// Run calculation in goroutines
@@ -98,8 +88,6 @@ func timesAlgorithm(a, b, c *[][]float64, m, n, h int) {
 		wg.Wait()
 		return
 	}
-
-	fmt.Println("base strategy")
 
 	// add strategy for many buffers
 	var sum float64

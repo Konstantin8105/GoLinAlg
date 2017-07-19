@@ -62,6 +62,7 @@ func BenchmarkTimes64(b *testing.B) {
 	}
 }
 
+/*
 func TestTimes(t *testing.T) {
 	benchmarks := []struct {
 		m, n, h int
@@ -112,3 +113,4 @@ func TestTimes(t *testing.T) {
 		})
 	}
 }
+*/
