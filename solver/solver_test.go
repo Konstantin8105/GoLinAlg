@@ -43,7 +43,7 @@ func getTest() (A matrix.T64, x matrix.T64, b matrix.T64) {
 		x.Set(i, 0, 7.55*float64(i))
 	}
 
-	b = A.Times(x)
+	b = A.Times(&x)
 	return
 }
 
