@@ -22,7 +22,7 @@ func TestMatrix(t *testing.T) {
 func TestLUSolver(t *testing.T) {
 	A, x, b := getTest()
 	s := solver.NewLUsolver(A)
-	result := s.Solve(b)
+	result, _ := s.Solve(b)
 
 	if !result.IsEqual(x) {
 		t.Errorf("Not correct LU solver")

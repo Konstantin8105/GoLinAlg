@@ -31,12 +31,12 @@ func NewLUsolver(A matrix.T64) (s LU64) {
 	s.lu = matrix.NewMatrix64byMatrix64(A)
 	m := s.lu.GetRowSize()
 	n := s.lu.GetColumnSize()
-	s.piv = make([]int, m, m)
+	s.piv = make([]int, m)
 	for i := 0; i < m; i++ {
 		s.piv[i] = i
 	}
 
-	LUcolj := make([]float64, m, m)
+	LUcolj := make([]float64, m)
 
 	// Outer loop.
 
@@ -139,7 +139,7 @@ func (s *LU64) GetU() matrix.T64 {
 
 // GetPivot -  Return pivot permutation vector piv
 func (s *LU64) GetPivot() []int {
-	p := make([]int, s.lu.GetRowSize(), s.lu.GetRowSize())
+	p := make([]int, s.lu.GetRowSize())
 	m := len(p)
 	for i := 0; i < m; i++ {
 		p[i] = s.piv[i]
@@ -149,7 +149,7 @@ func (s *LU64) GetPivot() []int {
 
 // GetPivotFloat64 - Return pivot permutation vector as a one-dimensional float64 array
 func (s *LU64) GetPivotFloat64() []float64 {
-	p := make([]float64, s.lu.GetRowSize(), s.lu.GetRowSize())
+	p := make([]float64, s.lu.GetRowSize())
 	m := len(p)
 	for i := 0; i < m; i++ {
 		p[i] = (float64)(s.piv[i])
@@ -174,13 +174,13 @@ func (s *LU64) Det() float64 {
 // A Matrix with as many rows as A and any number of columns.
 // X so that L*U*X = B(piv,:)
 // error - Matrix row dimensions must agree. or Matrix is singular.
-func (s *LU64) Solve(b matrix.T64) (x matrix.T64) {
+func (s *LU64) Solve(b matrix.T64) (x matrix.T64, err error) {
 
 	if b.GetRowSize() != s.lu.GetRowSize() {
-		panic(fmt.Errorf("Matrix row dimensions must agree"))
+		return x, fmt.Errorf("Matrix row dimensions must agree")
 	}
 	if !(s.isNonsingular()) {
-		panic(fmt.Errorf("Matrix is singular"))
+		return x, fmt.Errorf("Matrix is singular")
 	}
 
 	// Copy right hand side with pivoting
@@ -207,5 +207,5 @@ func (s *LU64) Solve(b matrix.T64) (x matrix.T64) {
 			}
 		}
 	}
-	return x
+	return x, nil
 }
