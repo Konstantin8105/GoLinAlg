@@ -1,7 +1,6 @@
 package solver_test
 
 import (
-	"fmt"
 	"math/rand"
 	"testing"
 
@@ -47,17 +46,33 @@ func getTest() (A matrix.T64, x matrix.T64, b matrix.T64) {
 	return
 }
 
-func TestEigen(t *testing.T) {
+func TestSingular(t *testing.T) {
 	A := matrix.NewMatrix64bySize(2, 2)
 	A.Set(0, 0, -1.0)
 	A.Set(1, 0, 2.0)
 
 	A.Set(0, 1, -6.0)
-	A.Set(1, 1, 6.0)
+	A.Set(1, 1, 12.0)
 
-	e := solver.NewEigen(A)
+	e := solver.NewLUsolver(A)
 
-	fmt.Println("getV = ", e.GetV())
-	fmt.Println("eigenvalue = ", e.GetRealEigenvalues())
-	fmt.Println("eigenImag  = ", e.GetImagEigenvalues())
+	B := matrix.NewMatrix64bySize(2, 1)
+	B.Set(0, 0, 1.0)
+	B.Set(1, 0, 2.0)
+
+	_, err := e.Solve(B)
+
+	if err == nil {
+		t.Errorf("Have not checking singular")
+	}
+}
+
+func TestSizes(t *testing.T) {
+	A := matrix.NewMatrix64bySize(2, 2)
+	e := solver.NewLUsolver(A)
+	B := matrix.NewMatrix64bySize(3, 1)
+	_, err := e.Solve(B)
+	if err == nil {
+		t.Errorf("Have not checking of size. Input matrix is square, only")
+	}
 }
