@@ -102,6 +102,7 @@ func (s *LU64) isNonsingular() bool {
 	return true
 }
 
+/*
 // GetL - Return matrix lower triangular factor - L
 func (s *LU64) GetL() matrix.T64 {
 	x := matrix.NewMatrix64bySize(s.lu.GetRowSize(), s.lu.GetColumnSize())
@@ -169,6 +170,7 @@ func (s *LU64) Det() float64 {
 	}
 	return d
 }
+*/
 
 // Solve - solving A * x = b
 // A Matrix with as many rows as A and any number of columns.

@@ -1,8 +1,6 @@
 package solver_test
 
 import (
-	"fmt"
-	"math"
 	"math/rand"
 	"testing"
 
@@ -77,90 +75,4 @@ func TestSizes(t *testing.T) {
 	if err == nil {
 		t.Errorf("Have not checking of size. Input matrix is square, only")
 	}
-}
-
-func TestLUcheck(t *testing.T) {
-	A := matrix.NewMatrix64bySize(3, 3)
-	A.Set(0, 0, 1.0)
-	A.Set(0, 1, 2.0)
-	A.Set(0, 2, 3.0)
-
-	A.Set(1, 0, 4.0)
-	A.Set(1, 1, 5.0)
-	A.Set(1, 2, 6.0)
-
-	A.Set(2, 0, 7.0)
-	A.Set(2, 1, 8.0)
-	A.Set(2, 2, 9.0)
-
-	fmt.Println("A = ", A)
-
-	lu := solver.NewLUsolver(A)
-
-	expectedL := matrix.NewMatrix64bySize(3, 3)
-	expectedL.Set(0, 0, 1.0)
-	expectedL.Set(0, 1, 0.0)
-	expectedL.Set(0, 2, 0.0)
-
-	expectedL.Set(1, 0, 4.0)
-	expectedL.Set(1, 1, 1.0)
-	expectedL.Set(1, 2, 0.0)
-
-	expectedL.Set(2, 0, 7.0)
-	expectedL.Set(2, 1, 2.0)
-	expectedL.Set(2, 2, 1.0)
-
-	expectedU := matrix.NewMatrix64bySize(3, 3)
-	expectedU.Set(0, 0, 1.0)
-	expectedU.Set(0, 1, 2.0)
-	expectedU.Set(0, 2, 3.0)
-
-	expectedU.Set(1, 0, 0.0)
-	expectedU.Set(1, 1, -3.0)
-	expectedU.Set(1, 2, -6.0)
-
-	expectedU.Set(2, 0, 0.0)
-	expectedU.Set(2, 1, 0.0)
-	expectedU.Set(2, 2, 0.0)
-
-	actualL := lu.GetL()
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			if math.Abs(expectedL.Get(i, j)-actualL.Get(i, j)) > 1e-8 {
-				t.Errorf("Not Ok for element [%v,%v]", i, j)
-			}
-		}
-	}
-
-	actualU := lu.GetU()
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			if math.Abs(expectedU.Get(i, j)-actualU.Get(i, j)) > 1e-8 {
-				t.Errorf("Not Ok for element [%v,%v]", i, j)
-			}
-		}
-	}
-
-	actualA := actualL.Times(&actualU)
-	fmt.Println("actual A = ", actualA)
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			if math.Abs(A.Get(i, j)-actualA.Get(i, j)) > 1e-8 {
-				t.Errorf("Not Ok for element [%v,%v]", i, j)
-			}
-		}
-	}
-
-	expectedA := expectedL.Times(&expectedU)
-	fmt.Println("expected A = ", expectedA)
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
-			if math.Abs(A.Get(i, j)-expectedA.Get(i, j)) > 1e-8 {
-				t.Errorf("Not Ok for element [%v,%v]", i, j)
-			}
-		}
-	}
-
-	fmt.Println("pivot -->", lu.GetPivot())
-	fmt.Println("pivot2 ->", lu.GetPivotFloat64())
 }
